@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -34,34 +35,51 @@ public class MusicFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.fragment_music, container, false);
-		GetLibraryTask o = new GetLibraryTask();
-		o.execute("http://192.168.43.143:50420");
+		//GetLibraryTask o = new GetLibraryTask();
+		//o.execute("http://192.168.43.143:50420");
 
 		try {
-//			String data = 
-//					"{\"id\": 1,\"result\" : {\"audio\" : [	{\"title\" : \"title1\", \"id\" : 1},{\"title\" : \"title2\", \"id\" : 2}]}}";
-//			JSONObject donnees = new JSONObject(data);
-			JSONObject donnees = o.get();
+			String data = 
+					"{\"audio\" : [	{\"title\" : \"title1\", \"id\" : 1, \"artist\" : \"toto\"},{\"title\" : \"title2\", \"id\" : 2, \"artist\" : \"toto2\"}]}";
+			JSONObject donnees = new JSONObject(data);
+			//JSONObject donnees = o.get();
 			Log.d("taille","donnees : "+donnees.toString());
 			extraireDonnees(donnees);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
+			//		} catch (InterruptedException e) {
+			//			// TODO Auto-generated catch block
+			//			e.printStackTrace();
+			//		} catch (ExecutionException e) {
+			//			// TODO Auto-generated catch block
+			//			e.printStackTrace();
+			//		}
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		//String reponse = getDonnees(donnees);
 		tagslistview = (ListView) rootView.findViewById(R.id.taglistview);
 		ImageButton playBtn = (ImageButton) rootView.findViewById(R.id.play);
 		ImageButton pauseBtn = (ImageButton) rootView.findViewById(R.id.pause);
 		ImageButton stopBtn = (ImageButton) rootView.findViewById(R.id.stop);
-		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-		// R.layout.tag_view_item, mapCommande);
+
+		playBtn.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				new PlayPauseTask().execute("http://192.168.43.143:50420");
+			}
+		});
+		
+		pauseBtn.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				new PlayPauseTask().execute("http://192.168.43.143:50420");
+			}
+		});
+		
+		stopBtn.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				new StopTask().execute("http://192.168.43.143:50420");
+			}
+		});
+
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.tag_view_item, listChansons);
 		tagslistview.setAdapter(adapter);
 		tagslistview.setOnItemClickListener(new OnItemClickListener() {
